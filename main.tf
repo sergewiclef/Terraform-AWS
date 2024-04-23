@@ -72,7 +72,7 @@ resource "aws_iam_role" "lambda_iam" {
 provider "archive" {}
 data "archive_file" "search_lambda" {
 	type        = "zip"
-	source_file = "search-lambda.py"
+	source_file = "search_lambda.py"
 	output_path = "search.zip"
 }
 
