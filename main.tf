@@ -79,7 +79,7 @@ data "archive_file" "search_lambda" {
 //Create a search lambda function
 resource "aws_lambda_function" "search_lambda" {
 	function_name    = "search_lambda"
-	filename          = data.archive_file.search_lambda.output_path
+	filename          = "search.zip"
 	role             = aws_iam_role.lambda_iam.arn
 	handler          = "search_lambda.lambda_handler"
 	runtime          = "python3.9"
