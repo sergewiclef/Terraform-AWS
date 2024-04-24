@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AWS Learning Project</title>
+</head>
+<body>
+  <h1>Welcome to the AWS Personal Learning Project!</h1>
+  <p>This is a simple tool for uploading files for your project. Briefly describe the project below and then choose the file you want to upload.</p>
+  <h2>The project aims at create a platform to send mass emails from a CSV list to be uploaded by users</h2>
+  <h2>The project uses the following AWS services to accomplish the above</h2>
+  <ul>
+    <li>S3 Static Web Hosting as a landing page.</li>
+    <li>An API Gateway to receive email send requests</li>
+    <li>A Python Lambda function to format the emails.</li>
+    <li>AWS SES to send emails.</li>
+  </ul>
+  
+  <h2>Please upload the csv file with the following attributes</h2>
+  <ul>
+    <li>Recipient Names</li>
+    <li>REcipient Email Address</li>
+  </ul>
+  <form action="your_script.php" method="post" enctype="multipart/form-data">
+    <label for="file">Select file to upload:</label>
+    <input type="file" id="file" name="file">
+    <br>
+    <input type="submit" value="Upload File">
+  </form>
+</body>
+</html>
