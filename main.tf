@@ -62,6 +62,19 @@ data "aws_iam_policy_document" "lambda_policy" {
 	}
 }
 
+//Create SES IAM policy
+data "aws_iam_policy_document" "SES_policy" {
+	statement {
+		sid    = "SESPolicyId"
+		effect = "Allow"
+		principals {
+			identifiers = ["ses.amazonaws.com"]
+			type        = "Service"
+		}
+		actions = ["sts:AssumeRole"]
+	}
+}
+
 //create IAM role for lambda policy
 resource "aws_iam_role" "lambda_iam" {
 	name               = "lambda_iam"
