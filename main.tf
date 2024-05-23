@@ -1,12 +1,12 @@
 //main.tf
 # Create S3 Bucket for the static website
-resource "aws_s3_bucket" "Email-App" {
-  bucket = "Email-App"
+resource "aws_s3_bucket" "Email-App-SMW" {
+  bucket = "Email-App-SMW"
 }
 
 # Upload index file to S3
 resource "aws_s3_object" "Email-Index" {
-  bucket = aws_s3_bucket.Email-App.id
+  bucket = aws_s3_bucket.Email-App-SMW.id
   key = "index.html"
   source = "index.html"
   content_type = "text/html"
@@ -15,7 +15,7 @@ resource "aws_s3_object" "Email-Index" {
 
 # Upload CSS file to S3
 resource "aws_s3_object" "Email-CSS" {
-  bucket = aws_s3_bucket.Email-App.id
+  bucket = aws_s3_bucket.Email-App-SMW.id
   key = "style.css"
   source = "style.css"
   content_type = "text/css"
@@ -24,7 +24,7 @@ resource "aws_s3_object" "Email-CSS" {
 
 # Upload error file to S3
 resource "aws_s3_object" "Email-Error" {
-  bucket = aws_s3_bucket.Email-App.id
+  bucket = aws_s3_bucket.Email-App-SMW.id
   key = "error.html"
   source = "error.html"
   content_type = "text/html"
@@ -32,8 +32,8 @@ resource "aws_s3_object" "Email-Error" {
 }
 
 # S3 Web hosting
-resource "aws_s3_bucket_website_configuration" "Email-App-Hosting" {
-  bucket = aws_s3_bucket.Email-App.id
+resource "aws_s3_bucket_website_configuration" "Email-App-SMW-Hosting" {
+  bucket = aws_s3_bucket.Email-App-SMW.id
   
   index_document {
     suffix = "index.html"
@@ -45,15 +45,15 @@ resource "aws_s3_bucket_website_configuration" "Email-App-Hosting" {
 }
 
 # S3 public access
-resource "aws_s3_bucket_public_access_block" "Email-App" {
-    bucket = aws_s3_bucket.Email-App.id
+resource "aws_s3_bucket_public_access_block" "Email-App-SMW" {
+    bucket = aws_s3_bucket.Email-App-SMW.id
   block_public_acls = false
   block_public_policy = false
 }
 
 # S3 public Read policy
 resource "aws_s3_bucket_policy" "open_access" {
-  bucket = aws_s3_bucket.Email-App.id
+  bucket = aws_s3_bucket.Email-App-SMW.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -64,18 +64,18 @@ resource "aws_s3_bucket_policy" "open_access" {
         Effect = "Allow"
         Principal = "*"
         Action = ["s3:GetObject"]
-        Resource = "${aws_s3_bucket.Email-App.arn}/*"
+        Resource = "${aws_s3_bucket.Email-App-SMW.arn}/*"
       },
     ]
   })
-  depends_on = [ aws_s3_bucket_public_access_block.Email-App ]
+  depends_on = [ aws_s3_bucket_public_access_block.Email-App-SMW ]
 }
 
 #output S3 dns name and public IP
 output "bucket_name" {
-     value = aws_s3_bucket.Email-App.website_endpoint
+     value = aws_s3_bucket.Email-App-SMW.website_endpoint
 }
 output "bucket_dns_name" {
-     value = aws_s3_bucket.Email-App.bucket_domain_name
+     value = aws_s3_bucket.Email-App-SMW.bucket_domain_name
 }
 
