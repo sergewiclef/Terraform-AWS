@@ -1,37 +1,59 @@
 //main.tf
-# Create S3 Bucket
-resource "aws_s3_bucket" "twitter-stat-project" {
-  bucket = "twitter-stat-project"
+# Create S3 Bucket for the static website
+resource "aws_s3_bucket" "Email-App" {
+  bucket = "Email-App"
 }
 
-# Upload file to S3
-resource "aws_s3_object" "twitter-stat_index" {
-  bucket = aws_s3_bucket.twitter-stat-project.id
+# Upload index file to S3
+resource "aws_s3_object" "Email-Index" {
+  bucket = aws_s3_bucket.Email-App.id
   key = "index.html"
   source = "index.html"
   content_type = "text/html"
   etag = filemd5("index.html")
 }
 
-# S3 Web hosting
-resource "aws_s3_bucket_website_configuration" "twitter-stat_hosting" {
-  bucket = aws_s3_bucket.twitter-stat-project.id
+# Upload CSS file to S3
+resource "aws_s3_object" "Email-CSS" {
+  bucket = aws_s3_bucket.Email-App.id
+  key = "style.css"
+  source = "style.css"
+  content_type = "text/css"
+  etag = filemd5("style.css")
+}
 
+# Upload error file to S3
+resource "aws_s3_object" "Email-Error" {
+  bucket = aws_s3_bucket.Email-App.id
+  key = "error.html"
+  source = "error.html"
+  content_type = "text/html"
+  etag = filemd5("error.html")
+}
+
+# S3 Web hosting
+resource "aws_s3_bucket_website_configuration" "Email-App-Hosting" {
+  bucket = aws_s3_bucket.Email-App.id
+  
   index_document {
     suffix = "index.html"
+  
+  }
+  error_document {
+    key = "error.html"
   }
 }
 
 # S3 public access
-resource "aws_s3_bucket_public_access_block" "twitter-stat-project" {
-    bucket = aws_s3_bucket.twitter-stat-project.id
+resource "aws_s3_bucket_public_access_block" "Email-App" {
+    bucket = aws_s3_bucket.Email-App.id
   block_public_acls = false
   block_public_policy = false
 }
 
 # S3 public Read policy
 resource "aws_s3_bucket_policy" "open_access" {
-  bucket = aws_s3_bucket.twitter-stat-project.id
+  bucket = aws_s3_bucket.Email-App.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -42,11 +64,18 @@ resource "aws_s3_bucket_policy" "open_access" {
         Effect = "Allow"
         Principal = "*"
         Action = ["s3:GetObject"]
-        Resource = "${aws_s3_bucket.twitter-stat-project.arn}/*"
+        Resource = "${aws_s3_bucket.Email-App.arn}/*"
       },
     ]
   })
-  depends_on = [ aws_s3_bucket_public_access_block.twitter-stat-project ]
+  depends_on = [ aws_s3_bucket_public_access_block.Email-App ]
 }
 
+#output S3 dns name and public IP
+output "bucket_name" {
+     value = aws_s3_bucket.Email-App.website_endpoint
+}
+output "bucket_dns_name" {
+     value = aws_s3_bucket.Email-App.bucket_domain_name
+}
 
